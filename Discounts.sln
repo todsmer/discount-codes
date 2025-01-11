@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts", "Discounts\Discounts.csproj", "{D5A86549-07D7-41E0-9D1A-BFA23A90B998}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts.Client", "Discounts.Client\Discounts.Client.csproj", "{0CA96DD4-2265-4016-88D0-1875E3647CE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts.Tests", "Discounts.Tests\Discounts.Tests.csproj", "{07817D0D-F00E-4431-82D0-757DB47D6A4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protos", "Protos", "{F94A01C3-A0B4-4488-AA3A-2687A215D667}"
+	ProjectSection(SolutionItems) = preProject
+		Protos\discount.proto = Protos\discount.proto
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts.IntegrationTests", "Discounts.IntegrationTests\Discounts.IntegrationTests.csproj", "{F193CE40-58B6-4762-8976-70A5F2C7F0C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts.PerformanceTests", "Discounts.PerformanceTests\Discounts.PerformanceTests.csproj", "{C25D33E7-3251-4F02-9731-3BC7071C94AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{2CB8B165-4E9A-4093-A988-E294C5D17885}"
+    ProjectSection(SolutionItems) = preProject
+		SolutionItems\.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5A86549-07D7-41E0-9D1A-BFA23A90B998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A86549-07D7-41E0-9D1A-BFA23A90B998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A86549-07D7-41E0-9D1A-BFA23A90B998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A86549-07D7-41E0-9D1A-BFA23A90B998}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CA96DD4-2265-4016-88D0-1875E3647CE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CA96DD4-2265-4016-88D0-1875E3647CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CA96DD4-2265-4016-88D0-1875E3647CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CA96DD4-2265-4016-88D0-1875E3647CE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07817D0D-F00E-4431-82D0-757DB47D6A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07817D0D-F00E-4431-82D0-757DB47D6A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07817D0D-F00E-4431-82D0-757DB47D6A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07817D0D-F00E-4431-82D0-757DB47D6A4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F193CE40-58B6-4762-8976-70A5F2C7F0C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F193CE40-58B6-4762-8976-70A5F2C7F0C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F193CE40-58B6-4762-8976-70A5F2C7F0C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F193CE40-58B6-4762-8976-70A5F2C7F0C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C25D33E7-3251-4F02-9731-3BC7071C94AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25D33E7-3251-4F02-9731-3BC7071C94AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25D33E7-3251-4F02-9731-3BC7071C94AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25D33E7-3251-4F02-9731-3BC7071C94AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

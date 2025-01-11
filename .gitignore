@@ -1,0 +1,13 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+
+appsettings.Local.json
+
+# Ignore Rider project files
+.idea/
+*.sln.iml
+*.sln.DotSettings
+*.sln.DotSettings.user
