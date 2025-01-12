@@ -14,7 +14,10 @@ internal class DiscountCodeGenerator : IDiscountCodeGenerator
     public IReadOnlyCollection<string> GenerateCodes(int count, int length, CancellationToken cancellationToken)
     {
         if (count <= 0)
-            return Array.Empty<string>();
+            throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.");
+
+        if (length <= 0)
+            throw new ArgumentOutOfRangeException(nameof(length), "Length must be greater than zero.");
 
         var codes = new ConcurrentBag<string>();
         Parallel.ForEach(Enumerable.Range(0, count), new() { CancellationToken = cancellationToken }, _ =>

@@ -12,7 +12,9 @@ public class UseCodeRequestValidatorTests
     [InlineData("")]
     [InlineData("short")]
     [InlineData("thiscodeiswaytoolongtobevalid")]
-    public void Should_HaveValidationError_When_CodeLengthIsOutOfRange(string code)
+    [InlineData("abcdefg!")]
+    [InlineData("%bcdefg!")]
+    public void Should_HaveValidationError_When_CodeIsInvalid(string code)
     {
         // Arrange
         var request = new UseCodeRequest { Code = code };
