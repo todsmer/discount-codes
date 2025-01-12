@@ -1,5 +1,5 @@
+using Discounts.Application.Entities;
 using Discounts.Constants;
-using Discounts.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

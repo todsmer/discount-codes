@@ -2,6 +2,7 @@ using Discounts.Application.Repositories;
 using Discounts.Configuration;
 using Discounts.Infrastructure.Database;
 using Discounts.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +24,17 @@ public static class BootstrapExtensions
 
     private static DatabaseConfiguration GetDatabaseConfiguration(this IServiceProvider serviceProvider)
         => serviceProvider.GetRequiredService<IOptions<DatabaseConfiguration>>().Value;
+
+    public static async Task MigrateDatabase(this WebApplication application, CancellationToken cancellationToken = default)
+    {
+        var configuration = application.Services.GetDatabaseConfiguration();
+        if (!configuration.Migrate)
+            return;
+
+        using var scope = application.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DiscountDbContext>();
+        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+    }
 
     // this would be a generic method in a real environment
     private static IHostApplicationBuilder ConfigureDatabaseSettings(this IHostApplicationBuilder applicationBuilder)

@@ -3,6 +3,7 @@ using Discounts.Infrastructure.Database;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,7 +28,8 @@ public class DiscountTestContext
 
                     services.AddDbContext<DiscountDbContext>(options =>
                     {
-                        options.UseInMemoryDatabase(dbName);
+                        options.UseInMemoryDatabase(dbName)
+                            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
                     });
                 });
             });

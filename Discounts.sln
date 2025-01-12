@@ -16,9 +16,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discounts.PerformanceTests", "Discounts.PerformanceTests\Discounts.PerformanceTests.csproj", "{C25D33E7-3251-4F02-9731-3BC7071C94AD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{2CB8B165-4E9A-4093-A988-E294C5D17885}"
-    ProjectSection(SolutionItems) = preProject
+				ProjectSection(SolutionItems) = preProject
 		SolutionItems\.gitignore = .gitignore
-	EndProjectSection
+					docker-compose.yml = docker-compose.yml
+					Dockerfile = Dockerfile
+					README.md = README.md
+				EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

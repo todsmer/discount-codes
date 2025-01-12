@@ -23,6 +23,8 @@ builder
 
 var app = builder.Build();
 
+await app.MigrateDatabase();
+
 app.MapGrpcService<DiscountService>();
 
 await app.RunAsync();

@@ -1,8 +1,10 @@
+using Discounts.Application.Entities;
 using Discounts.Application.Exceptions;
 using Discounts.Application.Generators;
 using Discounts.Application.Repositories;
 using Discounts.Grpc;
 using FluentValidation;
+using Polly;
 
 namespace Discounts.Application.Handlers;
 
@@ -12,7 +14,11 @@ internal class GenerateDiscountCodesHandler(
     IDiscountCodeGenerator codeGenerator
 ) : ICommandHandler<GenerateDiscountCodesRequest, DiscountCodesResponse>
 {
-    private const int DuplicateLimit = 5;
+    private const int BatchSize = 200;
+    private const int TotalRetries = 5;
+    private static readonly AsyncPolicy RetryPolicy = Policy
+        .Handle<Exception>()
+        .RetryAsync(TotalRetries);
 
     public async Task<DiscountCodesResponse> Handle(GenerateDiscountCodesRequest request, CancellationToken cancellationToken)
     {
@@ -20,33 +26,44 @@ internal class GenerateDiscountCodesHandler(
         if (!validationResult.IsValid)
             throw new RequestValidationException(validationResult.ToString());
 
-        var index = 0;
-        var duplicateCount = 0;
-        var generatedCodes = new List<string>();
-        do
-        {
-            var code = codeGenerator.GenerateCode(request.Length);
-            if (await repository.Exists(code, cancellationToken))
-            {
-                ++duplicateCount;
-                if (duplicateCount > DuplicateLimit)
-                    throw new InvalidOperationException("Too many duplicate codes generated");
+        var totalBatches = GetBatchCount(request.Count);
 
-                continue;
+        var transaction = await repository.BeginTransaction(cancellationToken);
+        try
+        {
+            var response = new DiscountCodesResponse();
+            for (var i = 0; i < totalBatches; i++)
+            {
+                var batchSize = GetBatchSize(request.Count, i);
+                var generatedCodes =
+                    await RetryPolicy.ExecuteAsync(() => GenerateAndSaveBatch(batchSize, request.Length, cancellationToken));
+                response.Codes.AddRange(generatedCodes);
             }
 
-            generatedCodes.Add(code);
-            repository.Add(new(code: code));
+            await transaction.CommitAsync(cancellationToken);
 
-            ++index;
-
-        } while (index < request.Count);
-
-        await repository.SaveChanges(cancellationToken);
-
-        var response = new DiscountCodesResponse();
-        response.Codes.AddRange(generatedCodes);
-
-        return response;
+            return response;
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
+
+    private async Task<IReadOnlyCollection<string>> GenerateAndSaveBatch(int batchSize, int codeLength, CancellationToken cancellationToken)
+    {
+        var generatedCodes = codeGenerator.GenerateCodes(batchSize, codeLength, cancellationToken);
+
+        var discountCodes = generatedCodes.Select(code => new DiscountCode(code));
+        await repository.AddMany(discountCodes, cancellationToken);
+
+        return generatedCodes;
+    }
+
+    private static int GetBatchCount(int count)
+        => (int)Math.Ceiling((double)count / BatchSize);
+
+    private static int GetBatchSize(int count, int batchIndex)
+        => Math.Min(BatchSize, count - batchIndex * BatchSize);
 }

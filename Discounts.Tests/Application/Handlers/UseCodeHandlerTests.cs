@@ -1,8 +1,8 @@
+using Discounts.Application.Entities;
 using Discounts.Application.Exceptions;
 using Discounts.Application.Handlers;
 using Discounts.Application.Repositories;
 using Discounts.Grpc;
-using Discounts.Infrastructure.Database.Entities;
 using FluentAssertions;
 using FluentValidation;
 using NSubstitute;

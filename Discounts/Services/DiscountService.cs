@@ -18,6 +18,10 @@ public class DiscountService(
         {
             return await generateCodesHandler.Handle(request, context.CancellationToken);
         }
+        catch (RpcException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while generating discount codes");
@@ -30,6 +34,10 @@ public class DiscountService(
         try
         {
             return await useCodeHandler.Handle(request, context.CancellationToken);
+        }
+        catch (RpcException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

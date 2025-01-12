@@ -5,41 +5,47 @@ namespace Discounts.Tests.Application.Generators;
 
 public class DiscountCodeGeneratorTests
 {
-    [Theory]
-    [InlineData(5)]
-    [InlineData(7)]
-    [InlineData(8)]
-    [InlineData(10)]
-    [InlineData(22)]
-    [InlineData(2)]
-    [InlineData(14)]
-    public void GenerateCode_ShouldReturnCodeOfSpecifiedLength(int length)
+    private readonly DiscountCodeGenerator _generator = new();
+
+    [Fact]
+    public void GenerateCodes_ShouldGenerateCorrectNumberOfCodes()
     {
         // Arrange
-        var generator = new DiscountCodeGenerator();
+        const int count = 10;
+        const int length = 8;
 
         // Act
-        var code = generator.GenerateCode(length);
+        var codes = _generator.GenerateCodes(count, length, CancellationToken.None);
 
         // Assert
-        code.Should().NotBeNullOrEmpty();
-        code.Length.Should().Be(length);
+        codes.Should().HaveCount(count);
     }
 
     [Fact]
-    public void GenerateCode_ShouldReturnUniqueCodes()
+    public void GenerateCodes_ShouldGenerateCodesWithCorrectLength()
     {
         // Arrange
-        var generator = new DiscountCodeGenerator();
-        const int length = 10;
+        const int count = 10;
+        const int length = 8;
 
         // Act
-        var code1 = generator.GenerateCode(length);
-        var code2 = generator.GenerateCode(length);
+        var codes = _generator.GenerateCodes(count, length, CancellationToken.None);
 
         // Assert
-        code1.Should().NotBeNullOrEmpty();
-        code2.Should().NotBeNullOrEmpty();
-        code1.Should().NotBe(code2);
+        codes.Should().OnlyContain(code => code.Length == length);
+    }
+
+    [Fact]
+    public void GenerateCodes_ShouldGenerateUniqueCodes()
+    {
+        // Arrange
+        const int count = 100;
+        const int length = 8;
+
+        // Act
+        var codes = _generator.GenerateCodes(count, length, CancellationToken.None);
+
+        // Assert
+        codes.Should().OnlyHaveUniqueItems();
     }
 }

@@ -1,7 +1,9 @@
+using System.Collections;
+using Discounts.Application.Entities;
 using Discounts.Application.Repositories;
 using Discounts.Infrastructure.Database;
-using Discounts.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Discounts.Infrastructure.Repositories;
 
@@ -18,10 +20,16 @@ internal class DiscountCodeRepository(DiscountDbContext context) : IDiscountCode
             ? Task.FromResult(true)
             : _dbSet.AnyAsync(x => x.Code == code, cancellationToken);
 
-    public void Add(DiscountCode discountCode)
-        => context.Set<DiscountCode>()
-            .Add(discountCode);
+    public async Task AddMany(IEnumerable<DiscountCode> discountCodes, CancellationToken cancellationToken)
+    {
+        _dbSet.AddRange(discountCodes);
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
 
     public Task SaveChanges(CancellationToken cancellationToken)
         => context.SaveChangesAsync(cancellationToken);
+
+    public Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken)
+        => context.Database.BeginTransactionAsync(cancellationToken);
 }

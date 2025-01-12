@@ -1,4 +1,4 @@
-namespace Discounts.Infrastructure.Database.Entities;
+namespace Discounts.Application.Entities;
 
 public class DiscountCode
 {
@@ -9,12 +9,12 @@ public class DiscountCode
 
     public DiscountCode(string code)
     {
-        Id = Guid.NewGuid();
+        Id = 0;
         Code = code;
         IsUsed = false;
     }
 
-    public Guid Id { get; }
+    public long Id { get; }
     public string Code { get; }
     public bool IsUsed { get; private set; }
 

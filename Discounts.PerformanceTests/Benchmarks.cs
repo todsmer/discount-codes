@@ -7,7 +7,7 @@ namespace Discounts.PerformanceTests;
 public class Benchmarks
 {
     private readonly DiscountService.DiscountServiceClient _client
-        = new(GrpcChannel.ForAddress("https://localhost:5001"));
+        = new(GrpcChannel.ForAddress("http://localhost:5001"));
 
     [Benchmark]
     public async Task GenerateAndUseDiscountCodes()

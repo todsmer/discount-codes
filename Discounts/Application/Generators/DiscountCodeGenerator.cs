@@ -1,15 +1,32 @@
+using System.Collections.Concurrent;
+
 namespace Discounts.Application.Generators;
 
 public interface IDiscountCodeGenerator
 {
-    string GenerateCode(int length);
+    IReadOnlyCollection<string> GenerateCodes(int count, int length, CancellationToken cancellationToken);
 }
 
 internal class DiscountCodeGenerator : IDiscountCodeGenerator
 {
-    private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    public string GenerateCode(int length)
+    public IReadOnlyCollection<string> GenerateCodes(int count, int length, CancellationToken cancellationToken)
+    {
+        if (count <= 0)
+            return Array.Empty<string>();
+
+        var codes = new ConcurrentBag<string>();
+        Parallel.ForEach(Enumerable.Range(0, count), new() { CancellationToken = cancellationToken }, _ =>
+        {
+            var code = GenerateCode(length);
+            codes.Add(code);
+        });
+
+        return codes;
+    }
+
+    private static string GenerateCode(int length)
     {
         var random = new Random();
         return new(Enumerable.Repeat(Chars, length)

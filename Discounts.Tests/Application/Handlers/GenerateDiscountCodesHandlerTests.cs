@@ -1,9 +1,9 @@
+using Discounts.Application.Entities;
 using Discounts.Application.Exceptions;
 using Discounts.Application.Generators;
 using Discounts.Application.Handlers;
 using Discounts.Application.Repositories;
 using Discounts.Grpc;
-using Discounts.Infrastructure.Database.Entities;
 using FluentAssertions;
 using FluentValidation;
 using NSubstitute;
@@ -43,39 +43,21 @@ public class GenerateDiscountCodesHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldThrowInvalidOperationException_WhenTooManyDuplicatesGenerated()
-    {
-        // Arrange
-        var request = new GenerateDiscountCodesRequest { Count = 5, Length = 10 };
-        _validator.ValidateAsync(request, Arg.Any<CancellationToken>())
-            .Returns(new FluentValidation.Results.ValidationResult());
-        _codeGenerator.GenerateCode(request.Length).Returns("DUPLICATE");
-        _repository.Exists("DUPLICATE", Arg.Any<CancellationToken>()).Returns(true);
-
-        // Act
-        Func<Task> act = async () => await _handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Too many duplicate codes generated");
-    }
-
-    [Fact]
     public async Task Handle_ShouldGenerateUniqueCodes_WhenValidRequest()
     {
         // Arrange
         var request = new GenerateDiscountCodesRequest { Count = 3, Length = 10 };
         _validator.ValidateAsync(request, Arg.Any<CancellationToken>())
             .Returns(new FluentValidation.Results.ValidationResult());
-        _codeGenerator.GenerateCode(request.Length).Returns("CODE1", "CODE2", "CODE3");
-        _repository.Exists(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
+        _codeGenerator.GenerateCodes(request.Count, request.Length, Arg.Any<CancellationToken>())
+            .Returns(new List<string> { "CODE1", "CODE2", "CODE3" });
+        _repository.GetUnusedByCode(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns((DiscountCode?)null);
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
         response.Codes.Should().Contain(new List<string> { "CODE1", "CODE2", "CODE3" });
-        _repository.Received(3).Add(Arg.Any<DiscountCode>());
-        await _repository.Received(1).SaveChanges(Arg.Any<CancellationToken>());
+        await _repository.Received(1).AddMany(Arg.Any<IEnumerable<DiscountCode>>(), Arg.Any<CancellationToken>());
     }
 }

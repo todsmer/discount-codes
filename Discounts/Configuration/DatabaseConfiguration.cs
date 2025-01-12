@@ -7,6 +7,9 @@ public class DatabaseConfiguration
 {
     [Required]
     public required string ConnectionString { get; set; }
+
+    [Required]
+    public required bool Migrate { get; set; }
 }
 
 [OptionsValidator]

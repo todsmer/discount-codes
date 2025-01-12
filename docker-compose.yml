@@ -1,0 +1,25 @@
+services:
+  app:
+    container_name: discount-codes-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - db
+    environment:
+      - DatabaseConfiguration__ConnectionString=Server=discount-codes-db;Database=discounts;User Id=sa;Password=Password123!;TrustServerCertificate=True;
+      - DatabaseConfiguration__Migrate=true
+
+  db:
+    container_name: discount-codes-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Password123!"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+volumes:
+  mssql-data:
